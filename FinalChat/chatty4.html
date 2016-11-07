@@ -1,4 +1,4 @@
-<html>
+ <html>
 	<head>
 	<title>Currrent Times</title>
 	<link rel="shortcut icon" href="">
@@ -164,19 +164,19 @@
 			var col;
 
 			var sockets = [];
-			
+
 
 			socket.on('connect', function() {
 		        console.log("Connected" , connectCounter);
 		        // document.getElementById("connection").innerHTML = "Pssst! Pass me a note :)";
 		        connectCounter++;
 		        //choice = Math.floor(colors.length*Math.random()) //makes color for other people same color all around but random for each.
-		        
+
 		    });
 
-			socket.on('disconnect', function() { 
+			socket.on('disconnect', function() {
 				console.log("disconnect" , connectCounter);
-				connectCounter--; 
+				connectCounter--;
 
 			});
 
@@ -184,7 +184,7 @@
 
 			socket.on('chatmessage', function (data) {
 				var id = data.id;
-				var msg = data.msg;				
+				var msg = data.msg;
 				var color = Math.random(255);
 
 				var found = false;
@@ -197,8 +197,8 @@
 				}
 
 				if (!found) {
-					sockets.push({id: id, color: colors[Math.floor(Math.random(colors.length))]})
-
+					//sockets.push({id: id, color: colors[Math.floor(Math.random(colors.length))]})
+					sockets.push({id: id, color: colors[Math.floor(colors.length*Math.random())]})
 				}
 
 				console.log(data + ", " + connectCounter);
@@ -213,7 +213,7 @@
 			//     console.log(data + ", " + connectCounter);
 			//     //assign the content of data to sender variable
 			//     sender = data;
-			   
+
 			// });
 
 			// socket.color = data.color = colors[Math.floor(Math.random() * colors.length)];
@@ -227,7 +227,7 @@
 			var sendmessage = function(message) {
 				console.log("chatmessage " + message + socket.id);
 				socket.emit('chatmessage', message);
-				
+
 			};
 
 
@@ -238,8 +238,8 @@
 		        sendmessage(document.getElementById('message').value);
 		        document.getElementById("message").value ="" ;
 
-		        
-		       
+
+
 		    }
 
 		    function addSent() {
@@ -284,7 +284,7 @@
 		  //   for (var i = 0; i< colors.length; i++){
     //         	choice = colors[i];
     //         }
-		    
+
 
 
 
@@ -293,7 +293,7 @@
 		</script>
 	</head>
 
-	
+
 	 <body background = "">
 
 	    </div>
@@ -303,12 +303,12 @@
 	    <div id="textBox" class="box" onKeyPress="return checkSubmit(event)">
 
 	        <p align="center">
-	 
+
 	            <textarea id="message" name="message" class="textarea" placeholder=" "></textarea>
-	       
+
 	        </p>
 	  </div>
 
-	 
+
 	 </body>
 </html>
