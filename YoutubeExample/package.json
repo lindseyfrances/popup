@@ -1,0 +1,9 @@
+{
+	"name": "chat",
+	"version":"0.0.1",
+	"private": "true",
+	"dependency" : {
+		"socket.io":"1.5.1",
+		"express":"4.14.0"
+	}
+}

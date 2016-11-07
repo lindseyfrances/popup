@@ -1,0 +1,288 @@
+<html>
+	<head>
+	<title>Currrent Times</title>
+	<link rel="shortcut icon" href="">
+
+		<style>
+
+		 	body {
+				font-family: "Helvetica Neue";
+				font-size: 20px;
+				font-weight: normal;
+			}
+
+			section {
+				max-width: 450px;
+				margin: 50px auto;
+
+				div {
+					max-width: 255px;
+					word-wrap: break-word;
+					margin-bottom: 20px;
+			    line-height: 24px;
+				}
+			}
+
+			textarea{
+			    font: 400 13px 'Open Sans', sans-serif;
+				border:0;
+				padding:0 0px;
+				height:10%;
+				background-color:#E5E5EA;
+			    width:80%;
+  				/*float:left;*/
+  				position:fixed;
+  				left:10%;
+  				top:85%;
+  				z-index:10;
+			}
+
+			#textbox{
+				background-color:none;
+				margin-bottom:50px;
+				/*margin-left: 150px;*/
+				position:fixed;
+				z-index:10;
+			}
+
+			#connection{
+				width:100%;
+				text-align:center;
+			}
+
+
+			.box {
+		        width: 100%;
+		      /*  background-color:#E5E5EA;*/
+		       /* z-index:0;*/
+		       z-index: 1;
+		    }
+
+			.clear {clear: both}
+
+			.sendText,
+			.recText {
+			  max-width: 50%;
+			  word-wrap: break-word;
+			  margin-bottom: 20px;
+			}
+
+			.sendText,.recText{
+			  position: relative;
+			  padding: 10px 20px;
+			  color: white;
+			  border-radius: 25px;
+			  clear: both;
+			  font: 400 15px 'Open Sans', sans-serif;
+			}
+
+			.sendText {
+			  background: #0B93F6;
+			  z-index: 1;
+			  color:white;
+			  float:right;
+			  clear:both;
+			  border-bottom-right-radius: 20px 0px\9;
+			}
+
+			.sendText:before {
+			  content: "";
+			  position: absolute;
+			  z-index: 2;
+			  bottom: -2px;
+			  right: -8px;
+			  height: 19px;
+			  border-right: 20px solid #0B93F6;
+			  border-bottom-left-radius: 16px 14px;
+			  -webkit-transform: translate(0, -2px);
+			  transform: translate(0, -2px);
+			  border-bottom-left-radius: 15px 0px\9;
+			  transform: translate(-1px, -2px)\9;
+			}
+
+			.sendText:after {
+			  content: "";
+			  position: absolute;
+			  z-index: 2;
+			  bottom: -2px;
+			  right: -42px;
+			  width: 12px;
+			  height: 20px;
+			  background: white;
+			  border-bottom-left-radius: 10px;
+			  -webkit-transform: translate(-30px, -2px);
+			  transform: translate(-30px, -2px);
+			}
+
+			.recText {
+			  /*background: #E5E5EA;*/
+			  color: black;
+			  z-index: 3;
+			  float: left;
+			  clear:both;
+			  border-bottom-left-radius: 30px 0px\9;
+			}
+			.recText:before {
+			  content: "";
+			  position: absolute;
+			  z-index: 4;
+			  bottom: -2px;
+			  left: -7px;
+			  height: 19px;
+			  border-left: 20px solid ;
+			  border-bottom-right-radius: 16px 14px;
+			  -webkit-transform: translate(0, -2px);
+			  transform: translate(0, -2px);
+			  border-bottom-right-radius: 15px 0px\9;
+			  transform: translate(-1px, -2px)\9;
+			}
+
+			.recText:after {
+			  content: "";
+			  position: absolute;
+			  z-index: 4;
+			  bottom: -2px;
+			  left: 4px;
+			  width: 26px;
+			  height: 20px;
+			  background: white;
+			  border-bottom-right-radius: 10px;
+			  -webkit-transform: translate(-30px, -2px);
+			  transform: translate(-30px, -2px);
+			}
+
+		</style>
+
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+			var newData;
+			var counter = 0;
+			var socket = io.connect();
+			var connectCounter = 0;
+			var choice;
+			var sender;
+			var col;
+			
+
+			socket.on('connect', function() {
+		        console.log("Connected" , connectCounter);
+		        // document.getElementById("connection").innerHTML = "Pssst! Pass me a note :)";
+		        connectCounter++;
+		        choice = Math.floor(colors.length*Math.random()) //makes color for other people same color all around but random for each.
+		        
+		    });
+
+			socket.on('disconnect', function() { 
+				console.log("disconnect" , connectCounter);
+				connectCounter--; 
+
+			});
+
+
+
+			socket.on('chatmessage', function (data) {
+				console.log(data + ", " + connectCounter);
+                newData = data;
+        		addReceived();
+        		// choice = Math.floor(colors.length*Math.random())
+			});
+
+			//receive a senderid from the server
+			socket.on("senderid", function(data) {
+			    //print the data on the console
+			    console.log(data + ", " + connectCounter);
+			    //assign the content of data to sender variable
+			    sender = data;
+			   
+
+
+			});
+
+			// socket.on("color", function(data) {
+
+			// 	col = data
+			// })
+
+
+
+			//sending and recieving messaged
+			var sendmessage = function(message) {
+				console.log("chatmessage " + message + socket.id);
+				socket.emit('chatmessage', message);
+			};
+
+
+
+
+			function submit() {
+		        addSent();
+		        sendmessage(document.getElementById('message').value);
+		        document.getElementById("message").value =sender + "" ;
+		        // document.getElementById("message").style.background = colors[choice];
+		       
+		    }
+
+		    function addSent() {
+		        counter++;
+		        var div = document.createElement('div');
+		        div.className = 'sendText';
+		        div.id = "number" + counter;
+		        document.getElementsByTagName('body')[0].appendChild(div);
+		        document.getElementById(div.id).innerHTML = recieve+ "</span>: "  + document.getElementById('message').value;
+		         document.getElementById(div.id).style.backgroundColor = colors[choice];
+		         // document.getElementById(div.id).style.borderColor = colors[choice];
+
+		    }
+
+		    
+
+		    function addReceived() {
+		        counter++;
+		        var div = document.createElement('div');
+		        div.className = 'recText';
+		        div.id = "number" + counter;
+		        document.getElementsByTagName('body')[0].appendChild(div);
+		        document.getElementById(div.id).innerHTML = sender + ": " + newData;
+
+		        document.getElementById(div.id).style.backgroundColor = colors[choice];
+		        // document.getElementById(div.id).style.borderColor = colors[choice];
+
+		    }
+
+		    //for submiting by pressing enter
+		     function checkSubmit(e) {
+		        if (e.keyCode == 13) {
+		            submit();
+		        }
+		    }
+
+
+		    var colors = ["AliceBlue","AntiqueWhite","Aqua","Aquamarine","Azure","Beige","Bisque","Black","BlanchedAlmond","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Cornsilk","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","FloralWhite","ForestGreen","Fuchsia","Gainsboro","GhostWhite","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","NavajoWhite","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Wheat","White","WhiteSmoke","Yellow","YellowGreen"];
+
+
+
+
+
+
+		</script>
+	</head>
+
+	
+	 <body background = "">
+
+	    </div>
+
+		<div id="container"></div>
+
+	    <div id="textBox" class="box" onKeyPress="return checkSubmit(event)">
+
+	        <p align="center">
+	 
+	            <textarea id="message" name="message" class="textarea" placeholder=" "></textarea>
+	       
+	        </p>
+	  </div>
+
+	 
+	 </body>
+</html>
